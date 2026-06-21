@@ -1,0 +1,145 @@
+server:
+  port: 2333
+  address: 0.0.0.0
+  http2:
+    enabled: false
+
+plugins:
+  # ──────────────────────────────────────────────
+  # LavaSrc — Metadata + Spotify link support
+  # ──────────────────────────────────────────────
+  lavasrc:
+    providers:
+      # Best match first (ISRC → YouTube Music)
+      - "ytmsearch:\"%ISRC%\""
+      - "ytmsearch:%QUERY%"
+
+      # Fallbacks
+      - "ytsearch:\"%ISRC%\""
+      - "ytsearch:%QUERY%"
+
+    sources:
+      spotify: true        # Only for links (NOT search)
+      youtube: true
+      soundcloud: true
+      bandcamp: true
+      applemusic: false
+      deezer: false
+      yandexmusic: false
+      flowerytts: false
+
+    spotify:
+      clientId: "8471ce352d5d42b29e7477656841e2fb"
+      clientSecret: "96a7a5f85b1a4431adee2f11947fbe45"
+      playlistLoadLimit: 6
+      albumLoadLimit: 6
+
+  # Optional: Better search UX (safe to keep)
+  lavasearch:
+    sources:
+      youtube: true
+      youtubemusic: true
+      spotify: false       # disable to avoid spsearch usage
+      soundcloud: true
+      applemusic: false
+      deezer: false
+      yandexmusic: false
+      floweryTts: false
+
+lavalink:
+  plugins:
+    - dependency: "com.github.topi314.lavasrc:lavasrc-plugin:4.8.1"
+      snapshot: false
+    - dependency: "dev.lavalink.youtube:youtube-plugin:1.18.0"
+      snapshot: false
+
+  server:
+    password: "youshallnotpass"
+
+    sources:
+      youtube: false   # handled by plugin
+      soundcloud: true
+      bandcamp: true
+      twitch: true
+      vimeo: false
+      http: true
+      local: false
+
+    filters:
+      volume: true
+      equalizer: true
+      karaoke: true
+      timescale: true
+      tremolo: true
+      vibrato: true
+      distortion: true
+      rotation: true
+      channelMix: true
+      lowPass: true
+
+    # Performance tuning
+    bufferDurationMs: 400
+    frameBufferDurationMs: 5000
+    opusEncodingQuality: 10
+    resamplingQuality: LOW
+    trackStuckThresholdMs: 10000
+
+    useSeekGhosting: true
+    youtubePlaylistLoadLimit: 6
+    playerUpdateInterval: 5
+
+    youtubeSearchEnabled: true
+    soundcloudSearchEnabled: true
+
+    gc-warnings: true
+
+    # Ratelimit strategy (safe default)
+    ratelimit:
+      ipBlocks: []
+      excludedIps: []
+      strategy: "RotateOnBan"
+      searchTriggersFail: true
+      retryLimit: -1
+
+    # 🔥 Stable YouTube client setup
+    youtubeConfig:
+      clients:
+        - MUSIC
+        - ANDROID
+        - WEB
+
+    # Optional proxy (leave empty unless needed)
+    httpConfig:
+      proxyHost: ""
+      proxyPort: 0
+      proxyUser: ""
+      proxyPassword: ""
+
+metrics:
+  prometheus:
+    enabled: false
+    endpoint: /metrics
+
+sentry:
+  dsn: ""
+  environment: ""
+
+logging:
+  file:
+    path: ./logs/
+
+  level:
+    root: INFO
+    lavalink: INFO
+
+  request:
+    enabled: true
+    includeClientInfo: true
+    includeHeaders: false
+    includeQueryString: true
+    includePayload: false
+
+  logback:
+    rollingpolicy:
+      max-file-size: 1GB
+      max-history: 30
