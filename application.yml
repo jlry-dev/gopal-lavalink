@@ -4,60 +4,73 @@ server:
   http2:
     enabled: false
 
+# Plugin configuration
 plugins:
-  # ──────────────────────────────────────────────
-  # LavaSrc — Metadata + Spotify link support
-  # ──────────────────────────────────────────────
   lavasrc:
     providers:
-      # Best match first (ISRC → YouTube Music)
-      - "ytmsearch:\"%ISRC%\""
-      - "ytmsearch:%QUERY%"
-
-      # Fallbacks
+      - "scsearch:\"%ISRC%\""
+      - "scsearch:%QUERY%"
       - "ytsearch:\"%ISRC%\""
       - "ytsearch:%QUERY%"
 
     sources:
-      spotify: true        # Only for links (NOT search)
-      youtube: true
+      spotify: true
+      youtube: false
       soundcloud: true
       bandcamp: true
       applemusic: false
       deezer: false
       yandexmusic: false
       flowerytts: false
+      ytdlp: true
 
-    spotify:
-      clientId: "8471ce352d5d42b29e7477656841e2fb"
-      clientSecret: "96a7a5f85b1a4431adee2f11947fbe45"
-      playlistLoadLimit: 6
-      albumLoadLimit: 6
+    ytdlp:
+      path: "yt-dlp"
+      searchLimit: 10
+      mixPlaylistLoadLimit: 25
+      playlistLoadLimit: 1000
 
-  # Optional: Better search UX (safe to keep)
+  youtube:
+    enabled: true
+    allowSearch: true
+    allowDirectVideoIds: true
+    allowDirectPlaylistIds: true
+
+    clients:
+      - MUSIC
+      - TVHTML5_SIMPLY
+      - MWEB
+      - WEB
+      - ANDROID_VR
+      - WEBEMBEDDED
+
+    oauth:
+      enabled: false
+
   lavasearch:
     sources:
       youtube: true
       youtubemusic: true
-      spotify: false       # disable to avoid spsearch usage
+      spotify: false
       soundcloud: true
       applemusic: false
       deezer: false
       yandexmusic: false
       floweryTts: false
 
+# Lavalink configuration
 lavalink:
   plugins:
-    - dependency: "com.github.topi314.lavasrc:lavasrc-plugin:4.8.1"
+    - dependency: "com.github.topi314.lavasrc:lavasrc-plugin:4.8.3"
       snapshot: false
-    - dependency: "dev.lavalink.youtube:youtube-plugin:1.18.0"
+    - dependency: "dev.lavalink.youtube:youtube-plugin:1.18.2"
       snapshot: false
 
   server:
     password: "youshallnotpass"
 
     sources:
-      youtube: false   # handled by plugin
+      youtube: false
       soundcloud: true
       bandcamp: true
       twitch: true
@@ -77,23 +90,18 @@ lavalink:
       channelMix: true
       lowPass: true
 
-    # Performance tuning
     bufferDurationMs: 400
     frameBufferDurationMs: 5000
     opusEncodingQuality: 10
     resamplingQuality: LOW
     trackStuckThresholdMs: 10000
-
     useSeekGhosting: true
     youtubePlaylistLoadLimit: 6
     playerUpdateInterval: 5
-
     youtubeSearchEnabled: true
     soundcloudSearchEnabled: true
-
     gc-warnings: true
 
-    # Ratelimit strategy (safe default)
     ratelimit:
       ipBlocks: []
       excludedIps: []
@@ -101,14 +109,6 @@ lavalink:
       searchTriggersFail: true
       retryLimit: -1
 
-    # 🔥 Stable YouTube client setup
-    youtubeConfig:
-      clients:
-        - MUSIC
-        - ANDROID
-        - WEB
-
-    # Optional proxy (leave empty unless needed)
     httpConfig:
       proxyHost: ""
       proxyPort: 0
