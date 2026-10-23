@@ -32,7 +32,7 @@ jobs:
     permissions: {}
     env:
       CLOUDFLARED_VERSION: "2026.10.1"
-      steps:
+    steps:
       - name: Install cloudflared
         run: |
           curl -fsSL -o cloudflared.deb \
